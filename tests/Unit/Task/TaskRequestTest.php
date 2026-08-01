@@ -19,9 +19,9 @@ test('exposes the values it was constructed with', function (): void {
         ->and($request->extraArguments)->toBe(['--dry-run', '--verbose']);
 });
 
-test('defaults to no mode and no extra arguments', function (): void {
+test('defaults to apply mode and no extra arguments', function (): void {
     $request = new TaskRequest(task: Task::format());
 
-    expect($request->mode)->toBeNull()
+    expect($request->mode)->toBe(TaskMode::Apply)
         ->and($request->extraArguments)->toBe([]);
 });

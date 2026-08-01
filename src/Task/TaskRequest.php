@@ -9,7 +9,7 @@ final readonly class TaskRequest
     /** @param list<string> $extraArguments */
     public function __construct(
         public Task $task,
-        public ?TaskMode $mode = null,
+        public TaskMode $mode = TaskMode::Apply,
         public array $extraArguments = [],
     ) {}
 }
