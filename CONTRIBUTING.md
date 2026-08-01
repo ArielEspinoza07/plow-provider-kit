@@ -51,6 +51,26 @@ These mirror the project's core philosophy — keep them consistent across all n
 
 ---
 
+## Testing conventions
+
+- Tests live under `tests/Unit`, mirroring the namespace structure of `src/` (e.g. `src/Task/Task.php`
+  is tested by `tests/Unit/Task/TaskTest.php`).
+- Reusable test doubles for the interfaces in `src/Contracts` live under `tests/Fixtures`, namespaced
+  `Plow\Tests\Fixtures\...` (e.g. `FakeProcessRunner`, `FakeProvider`). Add new contracts' fakes there
+  rather than redefining ad-hoc doubles per test file.
+- Prefer real objects over mocks when a class is cheap to construct — e.g. `ProjectRoot` and
+  `ComposerManifestReader` are tested against a real temporary directory instead of a mocked
+  filesystem. Reach for a fixture only when the dependency is an interface with a real implementation
+  that would be expensive or impossible to exercise directly (child processes, network calls).
+- Pure interfaces (no default behavior) don't need their own test file — cover them through a fixture
+  that implements the contract instead.
+- When a Pest dataset (`->with([...])`) calls into production code to build its arguments, wrap the
+  call in a closure (`fn () => Task::format()`) rather than calling it eagerly in the array literal.
+  Eager calls happen while the file is loaded, outside the window `pest --coverage` records, and will
+  under-report coverage on otherwise fully-tested code.
+
+---
+
 ## Submitting changes
 
 1. Branch off `main` with a descriptive name (e.g. `feat/add-progress-bar`, `fix/loader-cache`).

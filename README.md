@@ -32,10 +32,11 @@ Your provider package should depend on **this package only** — not on `arieles
 
 ## What's included
 
-- **`Plow\Contracts\ProviderInterface`** — the interface every provider implements.
-- **`Plow\Contracts\ProcessRunnerInterface`** — for running external processes (the underlying tool your provider wraps).
+- **`Plow\Contracts\Provider\ProviderInterface`** — the interface every provider implements.
+- **`Plow\Contracts\Execution\ProcessRunnerInterface`** — for running external processes (the underlying tool your provider wraps).
 - **`Plow\Task\Task`** / **`Plow\Task\TaskMode`** — what task is being run, and in what mode (apply or dry-run).
 - **`Plow\Result\TaskResult`** / **`Plow\Result\ResultStatus`** — what your provider returns after running.
+- **`Plow\Execution\ProcessResult`** — the outcome of a process run by a `ProcessRunnerInterface` implementation.
 - **`Plow\Detection\ProjectRoot`** / **`Plow\Detection\ProjectPaths`** — locating the consuming project's root and source paths, for resolving binaries and analysis targets.
 - **`Plow\Provider\Diagnostic\ProviderDiagnostic`** — the health-check info `plow doctor` displays for your provider.
 
@@ -51,8 +52,8 @@ declare(strict_types=1);
 
 namespace Acme\PlowEslintBridge;
 
-use Plow\Contracts\ProviderInterface;
-use Plow\Contracts\ProcessRunnerInterface;
+use Plow\Contracts\Provider\ProviderInterface;
+use Plow\Contracts\Execution\ProcessRunnerInterface;
 use Plow\Detection\ProjectRoot;
 use Plow\Provider\Diagnostic\ProviderDiagnostic;
 use Plow\Result\{TaskResult, ResultStatus};
