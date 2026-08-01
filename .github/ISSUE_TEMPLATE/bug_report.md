@@ -48,7 +48,7 @@ final class TestProvider implements ProviderInterface
 | Key                       | Value             |
 |---------------------------|-------------------|
 | PHP version               | e.g. 8.3.0        |
-| Plow provider kit version | e.g. 1.1.0        |
+| Plow provider kit version | e.g. 0.1.0        |
 | OS                        | e.g. Ubuntu 24.04 |
 
 ## Additional context

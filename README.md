@@ -132,7 +132,7 @@ Add a `"type"` and an `extra.plow.providers` entry to your own package's `compos
     "name": "acme/plow-eslint-bridge",
     "type": "plow-provider",
     "require": {
-        "arielespinoza07/plow-provider-kit": "^1.0"
+        "arielespinoza07/plow-provider-kit": "^0.1"
     },
     "extra": {
         "plow": {
@@ -154,7 +154,9 @@ return PlowConfig::configure()
 
 ## Compatibility
 
-Requires PHP 8.3+. Follows semantic versioning — a breaking change to any interface or value object in this package will be released as a new major version.
+Requires PHP 8.3+. This package is currently pre-1.0 (`0.x`) — the public API may still change between
+minor releases while the provider contracts settle. Once `1.0.0` ships, a breaking change to any
+interface or value object will be released as a new major version, per semantic versioning.
 
 ---
 

@@ -4,9 +4,11 @@
 
 | Version | Supported |
 |---------|-----------|
-| 1.x     | ✅ Yes    |
+| 0.1.x   | ✅ Yes    |
 
-Only the latest minor release of the current major version receives security fixes.
+This package is currently pre-1.0. Only the latest published release receives security fixes until
+`1.0.0` ships, at which point this table will track the latest minor release of the current major
+version.
 
 ## Reporting a vulnerability
 
