@@ -32,6 +32,18 @@
             "Plow\\Tests\\": "tests/"
         }
     },
+    "scripts": {
+        "lint": "pint --test",
+        "lint:fix": "pint",
+        "analyse": "phpstan analyse",
+        "test": "pest",
+        "test:coverage": "pest --coverage",
+        "check": [
+            "@lint",
+            "@analyse",
+            "@test"
+        ]
+    },
     "minimum-stability": "stable",
     "prefer-stable": true,
     "config": {
