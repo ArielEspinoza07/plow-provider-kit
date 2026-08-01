@@ -35,6 +35,7 @@ Your provider package should depend on **this package only** — not on `arieles
 - **`Plow\Contracts\Provider\ProviderInterface`** — the interface every provider implements.
 - **`Plow\Contracts\Execution\ProcessRunnerInterface`** — for running external processes (the underlying tool your provider wraps).
 - **`Plow\Task\Task`** / **`Plow\Task\TaskMode`** — what task is being run, and in what mode (apply or dry-run).
+- **`Plow\Task\TaskRequest`** — what `ProviderInterface::execute()` receives: the task, its mode, and any extra arguments.
 - **`Plow\Result\TaskResult`** / **`Plow\Result\ResultStatus`** — what your provider returns after running.
 - **`Plow\Execution\ProcessResult`** — the outcome of a process run by a `ProcessRunnerInterface` implementation.
 - **`Plow\Detection\ProjectRoot`** / **`Plow\Detection\ProjectPaths`** — locating the consuming project's root and source paths, for resolving binaries and analysis targets.
@@ -57,7 +58,7 @@ use Plow\Contracts\Execution\ProcessRunnerInterface;
 use Plow\Detection\ProjectRoot;
 use Plow\Provider\Diagnostic\ProviderDiagnostic;
 use Plow\Result\{TaskResult, ResultStatus};
-use Plow\Task\{Task, TaskMode};
+use Plow\Task\{Task, TaskMode, TaskRequest};
 
 final readonly class EslintProvider implements ProviderInterface
 {
@@ -100,17 +101,17 @@ final readonly class EslintProvider implements ProviderInterface
         );
     }
 
-    public function execute(Task $task, TaskMode $mode): TaskResult
+    public function execute(TaskRequest $request): TaskResult
     {
-        $command = [$this->projectRoot->path() . '/node_modules/.bin/eslint', '.'];
-        if ($mode === TaskMode::Apply) {
+        $command = [$this->projectRoot->path() . '/node_modules/.bin/eslint', '.', ...$request->extraArguments];
+        if ($request->mode === TaskMode::Apply) {
             $command[] = '--fix';
         }
 
         $result = $this->processRunner->run($command, $this->projectRoot->path());
 
         return new TaskResult(
-            task: $task,
+            task: $request->task,
             provider: $this->name(),
             status: $result->successful() ? ResultStatus::Passed : ResultStatus::Failed,
             output: $result->output,
