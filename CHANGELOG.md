@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.0] - 2026-08-01
+
+### Changed
+
+- `Plow\Task\TaskRequest::$mode` is no longer nullable and now defaults to `TaskMode::Apply` instead
+  of `null`. Code relying on `null` to mean "no mode specified" must be updated to check against
+  `TaskMode::Apply` explicitly.
 
 ## [0.1.0] - 2026-08-01
 
@@ -31,5 +37,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Full Pest test suite for the above, including fixtures (`FakeProcessRunner`, `FakeProvider`) for
   contract-level testing.
 
-[Unreleased]: https://github.com/arielespinoza07/plow-provider-kit/compare/v0.1.0...HEAD
+[0.2.0]: https://github.com/arielespinoza07/plow-provider-kit/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/arielespinoza07/plow-provider-kit/releases/tag/v0.1.0
