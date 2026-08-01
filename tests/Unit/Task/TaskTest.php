@@ -34,17 +34,25 @@ test('equals() compares by value, not by instance', function (): void {
         ->and($first->equals($different))->toBeFalse();
 });
 
-test('named constructors map to the matching BuiltinTask value', function (BuiltinTask $builtin, Task $task): void {
+test('named constructors map to the matching BuiltinTask value', function (BuiltinTask $builtin, Closure $makeTask): void {
+    $task = $makeTask();
+
     expect($task->value)->toBe($builtin->value)
         ->and($task->is($builtin->value))->toBeTrue();
 })->with([
-    'format' => [BuiltinTask::Format, Task::format()],
-    'analyse' => [BuiltinTask::Analyse, Task::analyse()],
-    'test' => [BuiltinTask::Test, Task::test()],
-    'refactor' => [BuiltinTask::Refactor, Task::refactor()],
-    'audit' => [BuiltinTask::Audit, Task::audit()],
+    'format' => [BuiltinTask::Format, fn (): Task => Task::format()],
+    'analyse' => [BuiltinTask::Analyse, fn (): Task => Task::analyse()],
+    'test' => [BuiltinTask::Test, fn (): Task => Task::test()],
+    'refactor' => [BuiltinTask::Refactor, fn (): Task => Task::refactor()],
+    'audit' => [BuiltinTask::Audit, fn (): Task => Task::audit()],
 ]);
 
-test('named constructors are equal to fromString() built from the same enum value', function (): void {
-    expect(Task::format()->equals(Task::fromString(BuiltinTask::Format->value)))->toBeTrue();
-});
+test('named constructors are equal to fromString() built from the same enum value', function (BuiltinTask $builtin, Closure $makeTask): void {
+    expect($makeTask()->equals(Task::fromString($builtin->value)))->toBeTrue();
+})->with([
+    'format' => [BuiltinTask::Format, fn (): Task => Task::format()],
+    'analyse' => [BuiltinTask::Analyse, fn (): Task => Task::analyse()],
+    'test' => [BuiltinTask::Test, fn (): Task => Task::test()],
+    'refactor' => [BuiltinTask::Refactor, fn (): Task => Task::refactor()],
+    'audit' => [BuiltinTask::Audit, fn (): Task => Task::audit()],
+]);
