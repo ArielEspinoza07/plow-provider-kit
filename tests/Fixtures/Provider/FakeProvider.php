@@ -9,14 +9,12 @@ use Plow\Provider\Diagnostic\ProviderDiagnostic;
 use Plow\Result\ResultStatus;
 use Plow\Result\TaskResult;
 use Plow\Task\Task;
-use Plow\Task\TaskMode;
+use Plow\Task\TaskRequest;
 use Plow\Tests\Fixtures\Execution\FakeProcessRunner;
 
 final class FakeProvider implements ProviderInterface
 {
-    public ?Task $lastExecutedTask = null;
-
-    public ?TaskMode $lastExecutedMode = null;
+    public ?TaskRequest $lastExecutedRequest = null;
 
     public function __construct(
         private readonly string $name,
@@ -47,19 +45,19 @@ final class FakeProvider implements ProviderInterface
         return $this->available;
     }
 
-    public function execute(Task $task, TaskMode $mode): TaskResult
+    public function execute(TaskRequest $request): TaskResult
     {
-        $this->lastExecutedTask = $task;
-        $this->lastExecutedMode = $mode;
+        $this->lastExecutedRequest = $request;
 
         if ($this->result !== null) {
             return $this->result;
         }
 
-        $processResult = $this->processRunner->run([$this->name, (string) $task]);
+        $command = [$this->name, (string) $request->task, ...$request->extraArguments];
+        $processResult = $this->processRunner->run($command);
 
         return new TaskResult(
-            task: $task,
+            task: $request->task,
             provider: $this->name,
             status: $processResult->successful() ? ResultStatus::Passed : ResultStatus::Failed,
             output: $processResult->output,

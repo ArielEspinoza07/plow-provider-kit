@@ -9,6 +9,7 @@ use Plow\Result\ResultStatus;
 use Plow\Result\TaskResult;
 use Plow\Task\Task;
 use Plow\Task\TaskMode;
+use Plow\Task\TaskRequest;
 use Plow\Tests\Fixtures\Execution\FakeProcessRunner;
 use Plow\Tests\Fixtures\Provider\FakeProvider;
 
@@ -35,14 +36,14 @@ test('isAvailable() reflects the configured availability', function (): void {
         ->and($unavailable->isAvailable())->toBeFalse();
 });
 
-test('execute() records the task and mode it was called with', function (): void {
+test('execute() records the request it was called with', function (): void {
     $provider = new FakeProvider(name: 'pint', task: Task::format());
+    $request = new TaskRequest(task: Task::format(), mode: TaskMode::Apply);
 
-    $result = $provider->execute(Task::format(), TaskMode::Apply);
+    $result = $provider->execute($request);
 
     expect($result)->toBeInstanceOf(TaskResult::class)
-        ->and($provider->lastExecutedTask)->toEqual(Task::format())
-        ->and($provider->lastExecutedMode)->toBe(TaskMode::Apply);
+        ->and($provider->lastExecutedRequest)->toBe($request);
 });
 
 test('execute() runs the process runner and builds a result from its output', function (): void {
@@ -50,7 +51,7 @@ test('execute() runs the process runner and builds a result from its output', fu
     $processRunner = new FakeProcessRunner($processResult);
     $provider = new FakeProvider(name: 'pint', task: Task::format(), processRunner: $processRunner);
 
-    $result = $provider->execute(Task::format(), TaskMode::Apply);
+    $result = $provider->execute(new TaskRequest(task: Task::format(), mode: TaskMode::Apply));
 
     expect($processRunner->receivedCommand)->toBe(['pint', 'format'])
         ->and($result->status)->toBe(ResultStatus::Passed)
@@ -58,12 +59,25 @@ test('execute() runs the process runner and builds a result from its output', fu
         ->and($result->errorOutput)->toBe('');
 });
 
+test('execute() appends the request\'s extra arguments to the command', function (): void {
+    $processRunner = new FakeProcessRunner;
+    $provider = new FakeProvider(name: 'pint', task: Task::format(), processRunner: $processRunner);
+
+    $provider->execute(new TaskRequest(
+        task: Task::format(),
+        mode: TaskMode::Apply,
+        extraArguments: ['--dirty', '--test'],
+    ));
+
+    expect($processRunner->receivedCommand)->toBe(['pint', 'format', '--dirty', '--test']);
+});
+
 test('execute() maps a failing process result to a failed status', function (): void {
     $processResult = new ProcessResult(exitCode: 1, output: '', errorOutput: 'syntax error');
     $processRunner = new FakeProcessRunner($processResult);
     $provider = new FakeProvider(name: 'pint', task: Task::format(), processRunner: $processRunner);
 
-    $result = $provider->execute(Task::format(), TaskMode::Apply);
+    $result = $provider->execute(new TaskRequest(task: Task::format(), mode: TaskMode::Apply));
 
     expect($result->status)->toBe(ResultStatus::Failed)
         ->and($result->errorOutput)->toBe('syntax error');
@@ -85,7 +99,7 @@ test('execute() returns the configured result when given', function (): void {
         processRunner: $processRunner,
     );
 
-    expect($provider->execute(Task::format(), TaskMode::DryRun))->toBe($configured)
+    expect($provider->execute(new TaskRequest(task: Task::format(), mode: TaskMode::DryRun)))->toBe($configured)
         ->and($processRunner->receivedCommand)->toBeNull();
 });
 

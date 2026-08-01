@@ -7,7 +7,7 @@ namespace Plow\Contracts\Provider;
 use Plow\Provider\Diagnostic\ProviderDiagnostic;
 use Plow\Result\TaskResult;
 use Plow\Task\Task;
-use Plow\Task\TaskMode;
+use Plow\Task\TaskRequest;
 
 interface ProviderInterface
 {
@@ -19,7 +19,7 @@ interface ProviderInterface
 
     public function isAvailable(): bool;
 
-    public function execute(Task $task, TaskMode $mode): TaskResult;
+    public function execute(TaskRequest $request): TaskResult;
 
     public function diagnose(): ProviderDiagnostic;
 
