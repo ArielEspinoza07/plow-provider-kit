@@ -1,0 +1,42 @@
+{
+    "name": "arielespinoza07/plow-provider-kit",
+    "description": "Shared contracts, value objects, and execution primitives for building Plow providers — the minimal dependency surface for third-party Plow provider packages.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ariel Espinoza",
+            "email": "arielespinoza46@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.3"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.30",
+        "phpstan/phpstan": "^2.2",
+        "pestphp/pest": "^4.7.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Plow\\Contracts\\": "src/Contracts/",
+            "Plow\\Detection\\": "src/Detection/",
+            "Plow\\Execution\\": "src/Execution/",
+            "Plow\\Provider\\": "src/Provider/",
+            "Plow\\Result\\": "src/Result/",
+            "Plow\\Task\\": "src/Task/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Plow\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
